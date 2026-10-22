@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Usuário - Concluído</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .welcome-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: #555555;
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #bd2130;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-container">
+        <h1>Acesso Concedido!</h1>
+        <p>Você foi redirecionado com sucesso para a página <strong>usuario.html</strong>.</p>
+        <p id="infoUsuario">Identificando usuário...</p>
+        <a href="index.html" class="btn-logout" id="btnLogout">Sair do Sistema</a>
+    </div>
+
+    <script>
+        // Recupera o nome armazenado no localStorage
+        const nomeUsuario = localStorage.getItem("nomeUsuarioAutenticado");
+        const infoUsuario = document.getElementById("infoUsuario");
+
+        if (nomeUsuario) {
+            infoUsuario.innerHTML = `Sessão ativa de: <strong>${nomeUsuario}</strong>`;
+        } else {
+            infoUsuario.textContent = "Nenhum usuário identificado em sessão ativa.";
+        }
+
+        // Limpa a sessão ao sair
+        document.getElementById("btnLogout").addEventListener("click", function() {
+            localStorage.removeItem("nomeUsuarioAutenticado");
+        });
+    </script>
+</body>
+</html>

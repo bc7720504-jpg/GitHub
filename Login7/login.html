@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Login - Desafio Prático</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 24px;
+            color: #333333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666666;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 16px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .message.error {
+            display: block;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.success {
+            display: block;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: none;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 8px;
+            background-color: #28a745;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Área de Login</h2>
+        
+        <!-- Formulário com campos de usuário e senha -->
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" autocomplete="current-password">
+            </div>
+            
+            <button type="submit" id="btnSubmit">Entrar</button>
+        </form>
+
+        <!-- Apresentação da barra de progresso -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Exibição de mensagens dinâmicas -->
+        <div id="messageBox" class="message"></div>
+    </div>
+
+    <script>
+        // Consulta de usuários armazenados em um array de objetos
+        const usuariosCadastrados = [
+            { usuario: "admin", senha: "123", nome: "Administrador do Sistema" },
+            { usuario: "aluno", senha: "etec", nome: "Estudante Prático" },
+            { usuario: "professor", senha: "fiap", nome: "Docente Orientador" }
+        ];
+
+        // Captura dos elementos HTML
+        const loginForm = document.getElementById("loginForm");
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const btnSubmit = document.getElementById("btnSubmit");
+        const progressContainer = document.getElementById("progressContainer");
+        const progressBar = document.getElementById("progressBar");
+        const messageBox = document.getElementById("messageBox");
+
+        loginForm.addEventListener("submit", function(event) {
+            event.preventDefault(); 
+
+            // Leitura dos valores com .value
+            const usuarioDigitado = usernameInput.value.trim();
+            const senhaDigitada = passwordInput.value.trim();
+
+            messageBox.className = "message";
+            messageBox.style.display = "none";
+
+            // Validação de campos vazios utilizando if, else
+            if (usuarioDigitado === "" || senhaDigitada === "") {
+                exibirMensagem("Por favor, preencha todos os campos do formulário.", "error");
+                return;
+            }
+
+            // Variável booleana e Operadores lógicos
+            let credenciaisValidas = false;
+            let nomeUsuarioAutenticado = "";
+
+            // Verificação das credenciais utilizando um laço for
+            for (let i = 0; i < usuariosCadastrados.length; i++) {
+                if (usuariosCadastrados[i].usuario === usuarioDigitado && usuariosCadastrados[i].senha === senhaDigitada) {
+                    credenciaisValidas = true;
+                    nomeUsuarioAutenticado = usuariosCadastrados[i].nome;
+                    break;
+                }
+            }
+
+            // Exibição de mensagens de sucesso ou erro
+            if (credenciaisValidas === true) {
+                exibirMensagem(`Login bem-sucedido! Bem-vindo, ${nomeUsuarioAutenticado}.`, "success");
+                
+                btnSubmit.disabled = true;
+                usernameInput.disabled = true;
+                passwordInput.disabled = true;
+
+                // Programação assíncrona e barra de progresso
+                simularCarregamento(nomeUsuarioAutenticado);
+            } else {
+                exibirMensagem("Usuário ou senha incorretos. Tente novamente.", "error");
+            }
+        });
+
+        function exibirMensagem(texto, tipo) {
+            messageBox.textContent = texto;
+            messageBox.className = `message ${tipo}`;
+        }
+
+        function simularCarregamento(nomeParaSalvar) {
+            progressContainer.style.display = "block";
+            let progresso = 0;
+
+            const intervalo = setInterval(function() {
+                progresso += 5;
+                progressBar.style.width = progresso + "%";
+
+                if (progresso >= 100) {
+                    clearInterval(intervalo);
+                    
+                    // Armazena o nome para exibir na tela de sucesso
+                    localStorage.setItem("nomeUsuarioAutenticado", nomeParaSalvar);
+
+                    // Redirecionamento para a página usuario.html
+                    setTimeout(function() {
+                        window.location.href = "usuario.html";
+                    }, 400);
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
